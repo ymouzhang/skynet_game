@@ -3,7 +3,7 @@ local cluster = require "skynet.cluster"
 
 -- 封装服务类
 local M = {
-	-- 服务名
+    -- 服务名
     name = "",
     -- 服务id
     id = 0,
@@ -23,13 +23,13 @@ end
 
 -- 消息分发
 local dispatch = function (session, address, cmd, ...)
-	-- 从resp表中查找是否存在消息的响应函数
+    -- 从resp表中查找是否存在消息的响应函数
     local func = M.resp[cmd]
     if not func then
         skynet.ret()
         return
     end
-	-- 调用响应函数
+    -- 调用响应函数
     local ret = table.pack(xpcall(func, tracback, address, ...))
     local isok = ret[1]
 
@@ -55,6 +55,24 @@ function M.start(name, id, ...)
     M.name = name
     M.id = tonumber(id)
     skynet.start(init)
+end
+
+function M.call(node, srv, ...)
+    local mynode = skynet.getenv("node")
+    if node == mynode then	
+        return skynet.call(srv, "lua", ...)
+    else
+        return cluster.call(node, srv, ...)
+    end
+end
+
+function M.send(node, srv, ...)
+    local mynode = skynet.getenv("node")
+    if node == mynode then	
+        return skynet.send(srv, "lua", ...)
+    else
+        return cluster.send(node, srv, ...)
+    end
 end
 
 return M
