@@ -6,5 +6,9 @@ skynet.start(function()
     local ping2 = skynet.newservice("ping");
 
     skynet.send(ping1, "lua", "start", ping2);
+
+    -- telnet 127.0.0.1 8888
+    local echo1 = skynet.newservice("echo")
+    skynet.start(echo1)
     skynet.exit();
 end)
