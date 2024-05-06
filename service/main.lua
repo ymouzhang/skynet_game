@@ -1,20 +1,10 @@
 local skynet = require "skynet"
+local runconfig = require "runconfig"
 
 skynet.start(function ()
     skynet.error("[start main] hello world")
-    -- 启动打工服务
-    local worker1 = skynet.newservice("worker", "worker", 1)
-    -- 启动买猫粮服务
-    local buy1 = skynet.newservice("buy", "buy", 1)
-
-    -- 开始打工
-    skynet.send(worker1, "lua", "start_work")
-    skynet.sleep(200)
-    -- 结束打工
-    skynet.send(worker1, "lua", "stop_work")
-
-    -- 买猫粮
-    skynet.send(buy1, "lua", "buy")
+    skynet.error(runconfig.agentmgr.node)
+    skynet.newservice("gateway","gateway",1)
 
     -- 退出主服务
     skynet.exit()
